@@ -2,6 +2,8 @@ package com.security.jwt.medium.controllers;
 
 import java.util.Collection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,7 @@ import com.security.jwt.model.Product;
 @RequestMapping("products")
 public class ProductController {
 
+
 	private final ProductService productService;
 
 	public ProductController(ProductService productService) {
@@ -30,10 +33,10 @@ public class ProductController {
 		return productService.getAllProducts();
 	}
 
-	@PostMapping
+	@PostMapping("/addProduct")
 	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-	public void addProduct(@RequestBody Product product) {
-		productService.addProduct(product);
+	public Product addProduct(@RequestBody Product product) {		
+		return productService.addProduct(product);
 	}
 
 	@DeleteMapping("{id}")

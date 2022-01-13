@@ -5,12 +5,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.security.jwt.medium.controllers.ProductController;
 import com.security.jwt.model.Product;
 
 @Service
 public class ProductService {
+	
+	// Log operations
+	private static final Logger log = LoggerFactory.getLogger(ProductService.class);
 
 	private final Map<Long, Product> productMap = new ConcurrentHashMap<>();
 	private final AtomicInteger idCounter = new AtomicInteger(0);
@@ -28,13 +34,20 @@ public class ProductService {
 		return productMap.get(id);
 	}
 
-	public void addProduct(Product product) {
+	public Product addProduct(Product product) {
+		
+		log.info("Request body: " + product.toString());
+		
 		if (productMap.values().stream().anyMatch(p -> p.getName().equals(product.getName()))) {
 			throw new IllegalArgumentException(String.format("Product with name %s already exists", product.getName()));
 		}
 
 		product.setId(idCounter.incrementAndGet());
 		productMap.put(product.getId(), product);
+		
+		log.info("Request body: " + product);
+		
+		return product;
 	}
 
 	public void deleteProductById(long id) {
